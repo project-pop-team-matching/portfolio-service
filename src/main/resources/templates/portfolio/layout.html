@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<div class="flex">
+    <!-- 왼쪽 사이드바 -->
+    <aside th:replace="~{fragments/aside :: sidebar}"></aside>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="flex-1 p-8">
+        <div th:replace="~{${viewName} :: content}"></div>
+    </main>
+
+</div>
+
+<!-- 푸터 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

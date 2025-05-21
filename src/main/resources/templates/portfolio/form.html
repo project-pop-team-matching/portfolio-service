@@ -1,0 +1,183 @@
+<div th:fragment="content" class="max-w-4xl mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md">
+    <!-- 제목 -->
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8 border-b pb-3 sm:pb-4"
+        th:text="${portfolio.portfolioId != null} ? '포트폴리오 수정' : '포트폴리오 등록'">
+    </h1>
+
+    <form id="portfolio-form" th:object="${portfolio}">
+        <!-- CSRF 토큰 (실제 배포 시 활성화) -->
+<!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+
+        <!-- ID 필드 (수정 시에만 표시) -->
+        <input type="hidden" name="portfolioId" th:value="${portfolio.portfolioId}" th:if="${portfolio.portfolioId != null}">
+
+        <!-- 타입 선택 섹션 -->
+        <div class="mb-6">
+            <label class="block text-lg font-semibold text-gray-700 mb-3">포트폴리오 타입 <span class="text-red-500">*</span></label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div th:each="type : ${allTypes}">
+                    <input type="radio" th:id="${'type-' + type}"
+                           th:value="${type}" name="portfolioType"
+                           th:checked="${portfolio.portfolioType == type}"
+                           class="peer hidden" required>
+                    <label th:for="${'type-' + type}"
+                           class="block p-3 border-2 rounded-lg cursor-pointer text-center transition-colors
+                                  peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary
+                                  hover:bg-gray-50">
+                        <span th:text="${type}"></span>
+                    </label>
+                </div>
+            </div>
+            <div th:if="${#fields.hasErrors('portfolioType')}"
+                 class="text-sm text-red-500 mt-1">
+                <span th:errors="*{portfolioType}"></span>
+            </div>
+        </div>
+
+        <!-- 제목 섹션 -->
+        <div class="mb-6">
+            <label for="title" class="block text-lg font-semibold text-gray-700 mb-2">제목 <span class="text-red-500">*</span></label>
+            <input type="text" id="title" name="title" th:value="${portfolio.title}"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                   placeholder="포트폴리오 제목을 입력해주세요" required>
+            <div th:if="${#fields.hasErrors('title')}"
+                 class="text-sm text-red-500 mt-1">
+                <span th:errors="${portfolio.title}"></span>
+            </div>
+        </div>
+
+        <!-- 템플릿 선택 -->
+        <div class="mb-6">
+            <label for="templateSelect" class="block text-sm font-medium text-gray-700 mb-2">템플릿 선택</label>
+            <select id="templateSelect" name="template"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">선택 안 함</option>
+                <option value="basic">기본 포트폴리오 템플릿</option>
+            </select>
+        </div>
+
+        <!-- 설명 섹션 -->
+        <div class="mb-6">
+            <label for="description" class="block text-lg font-semibold text-gray-700 mb-2">설명 <span class="text-red-500">*</span></label>
+            <textarea id="description" name="description" rows="8"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="포트폴리오에 대한 상세 설명을 작성해주세요 (최대 2000자)"
+                      th:text="${portfolio.description}" required></textarea>
+            <div class="flex justify-between mt-1">
+                <div th:if="${#fields.hasErrors('description')}"
+                     class="text-sm text-red-500">
+                    <span th:errors="${portfolio.description}"></span>
+                </div>
+                <span class="text-sm text-gray-500" id="char-count">0/2000</span>
+            </div>
+        </div>
+
+        <!-- 기존 파일 표시 (수정 시) -->
+        <div th:if="${portfolio.files != null and !portfolio.files.empty}" class="mb-6">
+            <label class="block text-lg font-semibold text-gray-700 mb-3">기존 파일</label>
+            <div class="space-y-3">
+                <div th:each="file : ${portfolio.files}"
+                     class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div class="flex items-center min-w-0">
+                        <span th:text="${file.filename}" class="truncate"></span>
+                        <a th:href="${file.fileUrl}" target="_blank" class="ml-2 text-blue-500 hover:text-blue-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <button type="button" class="text-red-500 hover:text-red-700 p-1 file-delete-btn"
+                            th:data-file-id="${file.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 파일 업로드 섹션 -->
+        <div class="mb-6">
+            <label class="block text-lg font-semibold text-gray-700 mb-3">파일 첨부</label>
+
+            <!-- 실제 파일 입력 (숨겨둠) -->
+            <input id="file-upload" type="file" multiple class="hidden" accept=".pdf,.txt,.md,.csv,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+
+            <!-- 드래그 앤 드롭 영역 -->
+            <div id="drop-zone" class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-dashed border-gray-300 rounded-xl hover:border-primary transition-colors bg-gray-50 cursor-pointer">
+                <div class="space-y-3 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p class="text-sm text-gray-600">
+                        <span class="font-medium text-primary">파일 선택</span>
+                        또는 드래그 앤 드롭
+                    </p>
+                    <p class="text-xs text-gray-500">TXT, PDF, MD, CSV, MS Office 파일만 가능 (최대 50MB)</p>
+
+                    <!-- 선택된 파일 목록 -->
+                    <div id="file-list" class="text-sm text-gray-700 mt-2 space-y-2 max-h-40 overflow-y-auto">
+                        <p class="text-gray-400">선택된 파일 없음</p>
+                    </div>
+                </div>
+            </div>
+            <!-- 파일 크기 제한 알림 메시지 -->
+            <div id="file-size-error" class="hidden mt-2 p-2 text-sm text-red-500 bg-red-50 rounded"></div>
+        </div>
+
+        <!-- URL 추가 섹션 -->
+        <div class="mb-6">
+            <label class="block text-lg font-semibold text-gray-700 mb-3">참고 URL</label>
+            <div class="flex gap-2 mb-2">
+                <input type="url" id="url-input" placeholder="https://example.com"
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                <button type="button" id="add-url"
+                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                    추가
+                </button>
+            </div>
+            <div id="url-error" class="hidden text-sm text-red-500 mb-2"></div>
+
+            <div id="url-container" class="space-y-2">
+                <!-- 기존 URL 목록 -->
+                <div th:each="url : ${portfolio.urls}"
+                     class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <a th:href="${url.url}" th:text="${url.url}" target="_blank"
+                       class="text-blue-500 hover:underline truncate"></a>
+                    <button type="button" class="text-red-500 hover:text-red-700 p-1 url-delete-btn"
+                            th:data-url-id="${url.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 버튼 그룹 -->
+        <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t">
+            <a th:href="@{/portfolios}"
+               class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-center">
+                취소
+            </a>
+            <button type="submit" id="submit-button"
+                    class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center">
+                <span>저장하기</span>
+                <svg id="loading-spinner" class="hidden ml-2 animate-spin h-5 w-5 text-white"
+                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+        </div>
+    </form>
+
+    <script src="/js/portfolio/formValidation.js" type="module"></script>
+    <script src="/js/portfolio/fileUploadManager.js" type="module"></script>
+    <script src="/js/portfolio/urlManager.js" type="module"></script>
+    <script src="/js/portfolio/templateManager.js" type="module"></script>
+    <script src="/js/portfolio/formSubmitHandler.js" type="module"></script>
+    <script src="/js/portfolio/main.js" type="module"></script>
+</div>
