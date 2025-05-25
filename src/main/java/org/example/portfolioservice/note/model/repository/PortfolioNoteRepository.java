@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface PortfolioNoteRepository extends JpaRepository<PortfolioNote, Long> {
     List<PortfolioNote> findAllByPortfolio(Portfolio portfolio);
+
+    void deleteByPortfolio_PortfolioId(String portfolioId);
 }

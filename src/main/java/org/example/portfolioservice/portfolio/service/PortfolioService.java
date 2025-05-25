@@ -4,11 +4,13 @@ import org.example.portfolioservice.global.exception.PortfolioNotFoundException;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioRequest;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioResponse;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioSimple;
+import org.example.portfolioservice.portfolio.model.dto.PortfolioSummaryDTO;
 
 import java.util.List;
 
 public interface PortfolioService {
-    String createPortfolio(String userId, PortfolioRequest request);
+//    String createPortfolio(String userId, PortfolioRequest request);
+    PortfolioSummaryDTO createPortfolio(String userId, PortfolioRequest request);
 
     List<PortfolioSimple> getMyPortfolios(String userId) throws PortfolioNotFoundException;
 

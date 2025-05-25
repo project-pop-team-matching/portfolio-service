@@ -19,7 +19,7 @@
             <form id="delete-form" th:action="@{'/api/portfolios/' + ${portfolio.portfolioId}}" method="post">
                 <!--                  th:if="${portfolio.userId == #authentication.name}">-->
                 <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" id="delete-button"
+                <button type="button" id="delete-button"
                         class="bg-red-100 text-red-600 px-3 py-1 rounded-button text-sm flex items-center">
                     <i class="ri-delete-bin-line mr-1"></i> 삭제
                 </button>
@@ -156,4 +156,33 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="/js/note/feedback.js"></script>
     <script src="/js/note/note.js"></script>
+    <script>
+        document.getElementById("delete-button").addEventListener("click", function () {
+            if (confirm("정말 삭제하시겠습니까?")) {
+                const form = document.getElementById("delete-form");
+                const action = form.getAttribute("action");
+
+                fetch(action, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-Requested-With": "XMLHttpRequest" // 선택사항
+                    },
+                    body: "_method=DELETE"
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("삭제되었습니다.");
+                            window.location.href = "/portfolios"; // 목록 페이지 경로
+                        } else {
+                            alert("삭제에 실패했습니다.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("삭제 오류:", error);
+                        alert("서버 오류가 발생했습니다.");
+                    });
+            }
+        });
+    </script>
 </div>

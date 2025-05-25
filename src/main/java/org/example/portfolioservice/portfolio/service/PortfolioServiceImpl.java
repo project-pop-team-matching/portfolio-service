@@ -5,6 +5,7 @@ import lombok.extern.java.Log;
 import org.example.portfolioservice.global.exception.FileManagementException;
 import org.example.portfolioservice.global.exception.PortfolioNotFoundException;
 import org.example.portfolioservice.global.exception.UnauthorizedException;
+import org.example.portfolioservice.note.model.repository.PortfolioNoteRepository;
 import org.example.portfolioservice.portfolio.model.dto.*;
 import org.example.portfolioservice.portfolio.model.entity.Portfolio;
 import org.example.portfolioservice.portfolio.model.entity.PortfolioFile;
@@ -31,13 +32,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final FileStorageService fileStorageService;
     private final PortfolioFileRepository portfolioFileRepository;
     private final PortfolioUrlRepository portfolioUrlRepository;
-//    private final AnalysisService analysisService;
-//    private final PortfolioSummaryRepository portfolioSummaryRepository;
-//    private final UsersRepository usersRepository;
+    private final PortfolioNoteRepository portfolioNoteRepository;
 
     @Override
     @Transactional
-    public String createPortfolio(String userId, PortfolioRequest request) {
+    public PortfolioSummaryDTO createPortfolio(String userId, PortfolioRequest request) {
 //        Users userAccount = usersRepository.findById(UUID.fromString(userId)).orElseThrow(
 //                () -> new RuntimeException("유저를 찾을 수 없습니다."));
 
@@ -68,20 +67,14 @@ public class PortfolioServiceImpl implements PortfolioService {
         log.info(fileList.toString());
         portfolio.setFiles(fileList);
 
-
-//        // 요약을 위한 분석 생성
-//        PortfolioSummary summary = PortfolioSummary.builder()
-//                .status(AnalysisStatus.NOT_STARTED)
-//                .build();
-//        portfolioSummaryRepository.save(summary);
-//
-//        portfolio.setSummary(summary);
-//        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
         Portfolio saved = portfolioRepository.save(portfolio);
-        return saved.getPortfolioId();
-//
-//        // 비동기 요약 요청
-//        analysisService.handleAnalysis(savedPortfolio);
+        return new PortfolioSummaryDTO(
+                saved.getPortfolioId(),
+                saved.getDescription(),
+                saved.getUrls().stream().map(PortfolioUrl::getUrl).toList(),
+                saved.getFiles().stream().map(PortfolioFile::getStoredUrl).toList()
+        );
+
     }
 
     @Override
@@ -202,17 +195,6 @@ public class PortfolioServiceImpl implements PortfolioService {
             }
         }
 
-//        PortfolioSummary summary = portfolio.getSummary();
-//        summary.setStatus(AnalysisStatus.NOT_STARTED);
-//        portfolioSummaryRepository.save(summary);
-//        portfolio.setSummary(summary);
-//
-//        // 업데이트
-//        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
-//
-//        // 비동기 요약 요청
-//        analysisService.handleAnalysis(savedPortfolio);
-
     }
 
     private void deletePortfolioUrls(List<Long> urlIds, Portfolio portfolio) {
@@ -258,6 +240,9 @@ public class PortfolioServiceImpl implements PortfolioService {
                 }
             }
         }
+
+        // 연결된 노트 삭제
+        portfolioNoteRepository.deleteByPortfolio_PortfolioId(portfolioId);
 
         portfolioRepository.delete(portfolio);
     }

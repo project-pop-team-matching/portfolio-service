@@ -3,6 +3,7 @@ package org.example.portfolioservice.portfolio.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioRequest;
+import org.example.portfolioservice.portfolio.model.dto.PortfolioSummaryDTO;
 import org.example.portfolioservice.portfolio.service.PortfolioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,9 +37,9 @@ public class PortfolioApiController {
             );
             return ResponseEntity.badRequest().body(errors);
         }
-        String portfolioId = portfolioService.createPortfolio(userId, request);
+        PortfolioSummaryDTO summaryDTO = portfolioService.createPortfolio(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("portfolioId", portfolioId));
+                .body(summaryDTO);
     }
 
     // 포트폴리오 수정

@@ -11,6 +11,24 @@ const form = document.getElementById('portfolio-form');
 const submitButton = document.getElementById('submit-button');
 const loadingSpinner = document.getElementById('loading-spinner');
 
+async function summary(result) {
+    // return fetch(`https://feedback-service-3lhm.onrender.com/api/summary/request`, {
+    fetch(`http://localhost:8080/api/summary/request`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            portfolioId: result.portfolioId,
+            description: result.description,
+            urls: result.urls || [],
+            fileUrls: result.fileUrls || []
+        })
+    }).catch(error => {
+        console.error('Summary request failed: ', error);
+    });
+}
+
 /**
  * 폼 제출 처리
  */
@@ -35,6 +53,7 @@ export async function handleFormSubmit(e) {
         if (response.ok) {
             const result = await response.json();
             alert('저장되었습니다.');
+            summary(result)
             window.location.href = `/portfolios/${result.portfolioId}`; // 성공 시 상세 페이지로 이동
         } else {
             const error = await response.json();
@@ -58,8 +77,6 @@ async function submitForm(formData) {
     const url = isEditMode
         ? `/api/portfolios/${document.querySelector('input[name="portfolioId"]').value}/edit`
         : '/api/portfolios/new';
-    console.log("url = ", url);
-    console.log("formData = ", formData);
     // const method = isEditMode ? 'PUT' : 'POST';
 
     return fetch(url, {
