@@ -25,22 +25,48 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function loadNotesAndFeedbacks() {
         showLoading();
         try {
-            const notes = await fetchNotes();
-            hideLoading();
+            // 1. 포트폴리오 서비스에서 노트 목록 조회
+            const notes = await fetch(`/api/portfolios/${portfolioId}/notes`).then(res => res.json());
 
             if (notes.length === 0) {
                 showNoNotesMessage();
-            } else {
-                hideNoNotesMessage();
-                notes.forEach(note => {
-                    addNoteToUI(note);
-                    checkExistingFeedback(note.id); // feedback.js에 정의된 함수
-                });
+                hideLoading();
+                return;
             }
+
+            // 2. 노트 ID들로 피드백 서비스에 일괄 요청
+            const noteIds = notes.map(note => note.id);
+            // const API_BASE_URL = 'https://feedback-service-3lhm.onrender.com';
+            const API_BASE_URL = 'http://localhost:8080';
+            const response = await fetch(`${API_BASE_URL}/api/feedback/batch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    portfolioId: portfolioId,
+                    noteIds: noteIds
+                })
+            });
+            if (!response.ok) {
+                console.log('Failed to load feedbacks');
+            }
+            const feedbacks = await response.json();
+
+            // 3. UI 렌더링
+            hideNoNotesMessage();
+            notes.forEach(note => {
+                addNoteToUI(note);
+                const feedback = feedbacks.find(f => f.noteId === note.id);
+                console.log(feedback);
+                if (feedback) updateFeedbackUI(note.id, feedback);
+            });
+
         } catch (e) {
-            hideLoading();
-            console.error("노트 불러오기 실패", e);
+            console.error("Error loading data:", e);
             showNoNotesMessage();
+        } finally {
+            hideLoading();
         }
     }
 
