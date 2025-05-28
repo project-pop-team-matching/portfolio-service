@@ -8,6 +8,7 @@ import org.example.portfolioservice.portfolio.service.PortfolioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,8 @@ public class PortfolioApiController {
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPortfolio(
             @Valid @ModelAttribute("portfolio") PortfolioRequest request,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Authentication authentication) {
 
 //        String userId = getUserId(authentication);
         String userId = "testID";
@@ -76,6 +78,7 @@ public class PortfolioApiController {
 
 //    // 사용자 아이디 받기 NOTE: JWT토큰 사용해서 받기
 //    private String getUserId(Authentication authentication) {
+    // 유저 아이디가 필요
 //        return authentication.getName();
 //    }
 }

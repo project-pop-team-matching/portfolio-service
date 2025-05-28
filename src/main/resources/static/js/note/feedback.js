@@ -57,7 +57,10 @@ async function requestFeedback(noteId) {
  * @returns {Promise<boolean>} 요약 완료 여부
  */
 async function checkSummary(portfolioId) {
-    const response = await fetch(`${API_BASE_URL}/api/summary/${portfolioId}/status`);
+    const response = await fetch(`${API_BASE_URL}/api/summary/${portfolioId}/status`, {
+        method: 'GET',
+        credentials: 'include'
+    });
     const data = await response.json();
     return data.status === 'COMPLETED';
 }
@@ -70,6 +73,7 @@ async function checkSummary(portfolioId) {
 async function createFeedbackRequest(requestData) {
     const response = await fetch(`${API_BASE_URL}/api/feedback/request`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -110,7 +114,10 @@ async function checkExistingFeedback(noteId) {
  * @returns {Promise<FeedbackResponse>} 피드백 응답
  */
 async function fetchLatestFeedback(portfolioId, noteId) {
-    const response = await fetch(`${API_BASE_URL}/api/feedback/${portfolioId}/${noteId}/latest`);
+    const response = await fetch(`${API_BASE_URL}/api/feedback/${portfolioId}/${noteId}/latest`, {
+        method: 'GET',
+        credentials: 'include'
+    });
     if (response.ok) return await response.json();
     return null;
 }
@@ -123,7 +130,10 @@ async function fetchLatestFeedback(portfolioId, noteId) {
  */
 function startFeedbackPolling(noteId, feedbackId, portfolioId) {
     const pollingInterval = setInterval(async () => {
-        const feedback = await fetch(`${API_BASE_URL}/api/feedback/${feedbackId}`).then(r => r.json());
+        const feedback = await fetch(`${API_BASE_URL}/api/feedback/${feedbackId}`, {
+            method: 'GET',
+            credentials: 'include'
+        }).then(r => r.json());
         updateFeedbackUI(noteId, feedback);
 
         if (feedback.feedbackStatus !== FEEDBACK_STATUS.PROCESSING) {

@@ -15,6 +15,7 @@ async function summary(result) {
     // return fetch(`https://feedback-service-3lhm.onrender.com/api/summary/request`, {
     fetch(`http://localhost:8080/api/summary/request`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -81,10 +82,8 @@ async function submitForm(formData) {
 
     return fetch(url, {
         method: 'POST',
-        body: formData,
-        // headers: {
-        //     'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value
-        // }
+        credentials: 'include',
+        body: formData
     });
 }
 

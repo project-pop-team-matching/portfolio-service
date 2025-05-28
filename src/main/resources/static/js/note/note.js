@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         showLoading();
         try {
             // 1. 포트폴리오 서비스에서 노트 목록 조회
-            const notes = await fetch(`/api/portfolios/${portfolioId}/notes`).then(res => res.json());
+            const notes = await fetch(`/api/portfolios/${portfolioId}/notes`, {
+                method: 'GET',
+                credentials: 'include'
+            }).then(res => res.json());
 
             if (notes.length === 0) {
                 showNoNotesMessage();
@@ -40,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const API_BASE_URL = 'http://localhost:8080';
             const response = await fetch(`${API_BASE_URL}/api/feedback/batch`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -92,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function createNote(content) {
         const res = await fetch(`/api/portfolios/${portfolioId}/notes`, {
             method: 'POST',
+            credentials: 'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({content})
         });
@@ -99,7 +104,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     async function fetchNotes() {
-        const res = await fetch(`/api/portfolios/${portfolioId}/notes`);
+        const res = await fetch(`/api/portfolios/${portfolioId}/notes`, {
+            method: 'GET',
+            credentials: 'include'
+        });
         return await res.json();
     }
 
@@ -129,7 +137,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         try {
             await fetch(`/api/portfolios/${portfolioId}/notes/${noteId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: 'include'
             });
             document.querySelector(`[data-note-id="${noteId}"]`).remove();
         } catch (error) {

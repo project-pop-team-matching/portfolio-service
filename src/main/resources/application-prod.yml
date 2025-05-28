@@ -74,3 +74,8 @@ supabase:
 # GitHub token (Fine-grained token)
 github:
   token: ${GITHUB_TOKEN}
+
+cors:
+  allowed-origins:
+    - https://yourdomain.com
+    - https://api.yourdomain.com
