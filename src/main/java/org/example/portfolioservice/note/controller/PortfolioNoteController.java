@@ -2,6 +2,7 @@ package org.example.portfolioservice.note.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.portfolioservice.common.utils.AuthUtils;
 import org.example.portfolioservice.note.model.dto.PortfolioNoteRequest;
 import org.example.portfolioservice.note.model.dto.PortfolioNoteResponse;
 import org.example.portfolioservice.note.model.entity.PortfolioNote;
@@ -20,6 +21,7 @@ import java.util.List;
 public class PortfolioNoteController {
 
     private final PortfolioNoteService noteService;
+    private final AuthUtils authUtils;
 
     // 포트폴리오에 대한 노트 조회 목록
     @GetMapping
@@ -35,8 +37,8 @@ public class PortfolioNoteController {
             @PathVariable String portfolioId,
             @Valid @RequestBody PortfolioNoteRequest request) {
 
-//        String userId = getUserId(authentication);
-        String userId = "testID";
+//        String userId = "testID";
+        String userId = authUtils.getCurrentUserId();
 
         PortfolioNote note = noteService.createNote(userId, portfolioId, request);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -67,8 +69,8 @@ public class PortfolioNoteController {
             @PathVariable Long noteId,
             @Valid @RequestPart("request") PortfolioNoteRequest request) {
 
-//        String userId = getUserId(authentication);
-        String userId = "testID";
+//        String userId = "testID";
+        String userId = authUtils.getCurrentUserId();
         noteService.updatePortfolioNote(userId, portfolioId, noteId, request);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -80,8 +82,8 @@ public class PortfolioNoteController {
     public ResponseEntity<Void> deletePortfolioNote(
             @PathVariable String portfolioId,
             @PathVariable Long noteId) {
-//        String userId = getUserId(authentication);
-        String userId = "testID";
+//        String userId = "testID";
+        String userId = authUtils.getCurrentUserId();
         noteService.deletePortfolioNote(userId, portfolioId, noteId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

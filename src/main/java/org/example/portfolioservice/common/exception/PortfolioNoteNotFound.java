@@ -1,4 +1,4 @@
-package org.example.portfolioservice.global.exception;
+package org.example.portfolioservice.common.exception;
 
 public class PortfolioNoteNotFound extends RuntimeException {
     public PortfolioNoteNotFound(String message) {

@@ -1,5 +1,6 @@
-package org.example.portfolioservice.global.security;
+package org.example.portfolioservice.global.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -37,6 +38,26 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    public String resolveUserId(String token) {
+        log.info(token);
+        Claims claims = Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        // 1. UUID(userId)가 클레임에 있는지 우선 확인
+        if (claims.containsKey("userId")) {
+            return claims.get("userId", String.class); // UUID 반환
+        }
+
+        // 2. 없으면 email을 식별자로 사용 (임시)
+        String email = claims.getSubject();
+        log.warn("JWT에 userId가 없습니다. email로 대체 사용: {}", email);
+        return email; // 또는 email → UUID 조회 로직 추가
+    }
+
+
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -65,6 +86,6 @@ public class JwtTokenProvider {
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .toList());
 
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
     }
 }

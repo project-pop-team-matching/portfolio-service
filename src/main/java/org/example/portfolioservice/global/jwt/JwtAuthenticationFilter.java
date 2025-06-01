@@ -1,4 +1,4 @@
-package org.example.portfolioservice.global.security;
+package org.example.portfolioservice.global.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
-
         String uri = req.getRequestURI();
         log.debug("🔍 JwtAuthenticationFilter 진입 - 요청 URI: {}", uri);
 
@@ -63,5 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         chain.doFilter(req, res);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return false; // 모든 요청에 대해 필터 적용
     }
 }

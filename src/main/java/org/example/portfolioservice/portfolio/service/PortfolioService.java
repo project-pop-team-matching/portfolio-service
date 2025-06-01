@@ -1,6 +1,6 @@
 package org.example.portfolioservice.portfolio.service;
 
-import org.example.portfolioservice.global.exception.PortfolioNotFoundException;
+import org.example.portfolioservice.common.exception.PortfolioNotFoundException;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioRequest;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioResponse;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioSimple;

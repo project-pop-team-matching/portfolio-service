@@ -3,7 +3,7 @@ package org.example.portfolioservice.portfolio.service.file;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
-import org.example.portfolioservice.global.exception.FileManagementException;
+import org.example.portfolioservice.common.exception.FileManagementException;
 import org.example.portfolioservice.portfolio.model.entity.Portfolio;
 import org.example.portfolioservice.portfolio.model.entity.PortfolioFile;
 import org.springframework.beans.factory.annotation.Value;

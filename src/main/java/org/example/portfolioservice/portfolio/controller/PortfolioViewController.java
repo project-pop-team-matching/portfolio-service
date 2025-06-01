@@ -1,6 +1,7 @@
 package org.example.portfolioservice.portfolio.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.portfolioservice.common.utils.AuthUtils;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioRequest;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioResponse;
 import org.example.portfolioservice.portfolio.model.dto.PortfolioSimple;
@@ -20,12 +21,13 @@ import java.util.List;
 public class PortfolioViewController {
 
     private final PortfolioService portfolioService;
+    private final AuthUtils authUtils;
 
     // 포트폴리오 목록 조회
     @GetMapping
     public String getMyPortfolios(Model model) {
-//        String userId = getUserId(authentication);
-        String userId = "testID";
+//        String userId = "testID";
+        String userId = authUtils.getCurrentUserId();
 
         List<PortfolioSimple> portfolios = portfolioService.getMyPortfolios(userId);
         model.addAttribute("portfolios", portfolios);

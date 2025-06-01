@@ -2,9 +2,9 @@ package org.example.portfolioservice.portfolio.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.example.portfolioservice.global.exception.FileManagementException;
-import org.example.portfolioservice.global.exception.PortfolioNotFoundException;
-import org.example.portfolioservice.global.exception.UnauthorizedException;
+import org.example.portfolioservice.common.exception.FileManagementException;
+import org.example.portfolioservice.common.exception.PortfolioNotFoundException;
+import org.example.portfolioservice.common.exception.UnauthorizedException;
 import org.example.portfolioservice.note.model.repository.PortfolioNoteRepository;
 import org.example.portfolioservice.portfolio.model.dto.*;
 import org.example.portfolioservice.portfolio.model.entity.Portfolio;

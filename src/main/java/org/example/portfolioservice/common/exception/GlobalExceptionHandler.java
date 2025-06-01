@@ -1,4 +1,4 @@
-package org.example.portfolioservice.global.exception;
+package org.example.portfolioservice.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
