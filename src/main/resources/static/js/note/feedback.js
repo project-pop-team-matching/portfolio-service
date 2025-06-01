@@ -1,5 +1,5 @@
-// const API_BASE_URL = 'https://feedback-service-3lhm.onrender.com'
-const API_BASE_URL = 'http://localhost:8080'
+const API_BASE_URL = 'https://feedback-service-3lhm.onrender.com'
+// const API_BASE_URL = 'http://localhost:8080'
 const FEEDBACK_STATUS = {
     NOT_STARTED: 'NOT_STARTED',
     PROCESSING: 'IN_PROCESSING',

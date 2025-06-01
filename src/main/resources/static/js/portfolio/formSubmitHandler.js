@@ -12,8 +12,8 @@ const submitButton = document.getElementById('submit-button');
 const loadingSpinner = document.getElementById('loading-spinner');
 
 async function summary(result) {
-    // return fetch(`https://feedback-service-3lhm.onrender.com/api/summary/request`, {
-    fetch(`http://localhost:8080/api/summary/request`, {
+    return fetch(`https://feedback-service-3lhm.onrender.com/api/summary/request`, {
+    // fetch(`http://localhost:8080/api/summary/request`, {
         method: 'POST',
         credentials: 'include',
         headers: {

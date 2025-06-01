@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // 2. 노트 ID들로 피드백 서비스에 일괄 요청
             const noteIds = notes.map(note => note.id);
-            // const API_BASE_URL = 'https://feedback-service-3lhm.onrender.com';
-            const API_BASE_URL = 'http://localhost:8080';
+            const API_BASE_URL = 'https://feedback-service-3lhm.onrender.com';
+            // const API_BASE_URL = 'http://localhost:8080';
             const response = await fetch(`${API_BASE_URL}/api/feedback/batch`, {
                 method: 'POST',
                 credentials: 'include',
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             notes.forEach(note => {
                 addNoteToUI(note);
                 const feedback = feedbacks.find(f => f.noteId === note.id);
-                console.log(feedback);
+                // console.log(feedback);
                 if (feedback) updateFeedbackUI(note.id, feedback);
             });
 
